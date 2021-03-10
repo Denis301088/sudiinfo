@@ -66,6 +66,14 @@ public class RequestHandler {
 
                     for(DiapasonHouses diapason:st.getDiapasonHouses()){
 
+//                        diapason.getDiapason().keySet().forEach(key->{
+////                            switch (key){
+////                                case FIRST:
+////
+////                                case LAST:
+////                            }
+////                        });
+
                         if(diapason.getDiapason().containsKey(DIAPASON_HOUSES.FIRST)){
                             House houseFirst=diapason.getDiapason().get(DIAPASON_HOUSES.FIRST);
                             if (houseFirst.compareTo(currentHouse)>0)

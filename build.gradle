@@ -6,10 +6,16 @@ plugins {
 
 group = 'com'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = JavaVersion.11
+targetCompatibility = JavaVersion.11
 
 repositories {
 	mavenCentral()
+}
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.11
+    targetCompatibility = JavaVersion.11
 }
 
 dependencies {
@@ -34,3 +40,5 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
+
+
