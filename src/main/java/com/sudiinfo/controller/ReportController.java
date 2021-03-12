@@ -42,7 +42,7 @@ public class ReportController {
     }
 
     @GetMapping("/report")
-    public String getReport(Street street, @RequestParam(name = "judicial_sector",required = false) JudicialSector judicialsector, Model model){
+    public String getReport(Street street, @RequestParam(name = "judicial_sector",required = false) Integer judicialsector, Model model){
         model.addAttribute("reportActive",true);
         model.addAttribute("streetsname",new TreeSet(streetRepo.findAll().stream().map(Street::getName).collect(Collectors.toList())));
         model.addAttribute("judicial_sectors",judicialSectorRepo.findAll());
@@ -60,7 +60,7 @@ public class ReportController {
         }else {
             model.addAttribute("street",null);
 
-            model.addAttribute("resultRange",reportHandlerSector.handleReportSector(judicialsector));
+            model.addAttribute("resultRange",reportHandlerSector.handleReportSector(judicialSectorRepo.findById(judicialsector).get()));
             model.addAttribute("judicial_sector",judicialsector);
 
 
