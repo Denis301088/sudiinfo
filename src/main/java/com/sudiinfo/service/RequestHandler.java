@@ -38,7 +38,8 @@ public class RequestHandler {
     public String handleRequestForCity(@Valid Street street, BindingResult bindingResult,
                                        String number, @RequestParam(required = false) String housing, Model model){
 
-        List<Street> streets=streetRepo.findByName(street.getName());
+        List<Street> streets=streetRepo.findAll().stream().filter(x->x.getName().equalsIgnoreCase(street.getName())).collect(Collectors.toList());
+//        List<Street> streets=streetRepo.findByName(street.getName());
         List<Street>streetsForView=new ArrayList<>();
 
         if(!bindingResult.hasErrors()){
