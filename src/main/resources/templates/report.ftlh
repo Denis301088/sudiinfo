@@ -15,7 +15,7 @@
                     <div class="col-sm-3 col-md-4">
                         <select class="form-control" id="exampleFormControlSelect1" name="judicial_sector">
                             <#list judicial_sectors! as sector>
-                                <option value="${sector.id}">Участок №${sector.number_sector} ${sector.districtCity.name} </option>
+                                <option value="${sector.id?string["0"]}">Участок №${sector.number_sector} ${sector.districtCity.name} </option>
                             </#list>
                         </select>
                     </div>
