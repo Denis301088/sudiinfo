@@ -1,5 +1,6 @@
 package com.sudiinfo.controller;
 
+import com.sudiinfo.domain.databaseclasses.city.DiapasonHouses;
 import com.sudiinfo.domain.databaseclasses.city.JudicialSector;
 import com.sudiinfo.domain.databaseclasses.city.Street;
 import com.sudiinfo.repo.JudicialSectorRepo;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -42,7 +44,8 @@ public class ReportController {
     }
 
     @GetMapping("/report")
-    public String getReport(Street street, @RequestParam(name = "judicial_sector",required = false) String judicialsector, Model model){
+    public String getReport(Street street, @RequestParam(name = "judicial_sector",required = false) JudicialSector judicialsector, Model model){
+
         model.addAttribute("reportActive",true);
         model.addAttribute("streetsname",new TreeSet(streetRepo.findAll().stream().map(Street::getName).collect(Collectors.toList())));
         model.addAttribute("judicial_sectors",judicialSectorRepo.findAll());
@@ -51,8 +54,14 @@ public class ReportController {
         if(judicialsector==null){
             if(StringUtils.hasText(street.getName())){
                 List<Street> streets=streetRepo.findByName(street.getName());
-                model.addAttribute("streets",streets);
-                model.addAttribute("sizediapasones",streets.stream().map(Street::getDiapasonHouses).collect(Collectors.toList()).size());
+                if(streets.isEmpty())model.addAttribute("streetEmpty",true);
+                else {
+                    model.addAttribute("streets",streets);
+                    model.addAttribute("sizediapasones",streets.stream()
+                            .map(Street::getDiapasonHouses)
+                            .collect(Collectors.toList()).size());
+                }
+
             }else {
                 model.addAttribute("nameError","Введите название улицы");
             }
@@ -60,7 +69,7 @@ public class ReportController {
         }else {
             model.addAttribute("street",null);
 
-            model.addAttribute("resultRange",reportHandlerSector.handleReportSector(judicialSectorRepo.findById(Integer.parseInt(judicialsector)).get()));
+            model.addAttribute("resultRange",reportHandlerSector.handleReportSector(judicialsector));
             model.addAttribute("judicial_sector",judicialsector);
 
 

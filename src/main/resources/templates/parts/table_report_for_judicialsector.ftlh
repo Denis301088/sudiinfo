@@ -21,17 +21,17 @@
         <thead>
         <tr></tr>
         <tr>
-            <th class="table-warning" scope="col"><p class="text-center">Для улицы</p></th>
-            <th class="table-warning" scope="col"><p class="text-center">Диапазон участка</p></th>
-            <th class="table-info" scope="col"><p class="text-center">Пересечение с участком №:</p></th>
-            <th class="table-info" scope="col" colspan="3"><p class="text-center">Диапазон участка</p></th>
+            <th class="table-success" scope="col"><p class="text-center">Для улицы</p></th>
+            <th class="table-success" scope="col"><p class="text-center">Диапазон участка</p></th>
+            <th class="table-danger" scope="col"><p class="text-center">Пересечение с участком №:</p></th>
+            <th class="table-danger" scope="col" colspan="3"><p class="text-center">Диапазон участка</p></th>
         </tr>
         </thead>
         <tbody>
         <#if resultRange?has_content>
             <#list resultRange as name,value>
                 <#list value as val>
-                    <tr <#if value?is_even_item>class="table-success"<#else>class="table-danger"</#if>>
+                    <tr <#if value?is_even_item>class="table-secondary"<#else>class="table-secondary"</#if>>
                         <#if val?is_first>
                             <td rowspan="${value?size*2}">
                                 <p class="text-lg-center">
@@ -81,7 +81,7 @@
                             </p>
                         </td>
                     </tr>
-                    <tr <#if value?is_even_item>class="table-success"<#else>class="table-danger"</#if>>
+                    <tr <#if value?is_even_item>class="table-secondary"<#else>class="table-secondary"</#if>>
                         <td><p class="text-lg-center">заканчивая:</p></td>
                         <td>
                             <p class="text-lg-center">

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /*
@@ -67,35 +66,12 @@ public class RequestHandler {
 
                     for(DiapasonHouses diapason:st.getDiapasonHouses()){
 
-//                        diapason.getDiapason().keySet().forEach(key->{
-////                            switch (key){
-////                                case FIRST:
-////
-////                                case LAST:
-////                            }
-////                        });
+                        if((diapason.getDiapason().containsKey(DIAPASON_HOUSES.FIRST)
+                                && diapason.getDiapason().get(DIAPASON_HOUSES.FIRST).compareTo(currentHouse)>0)
+                            || (diapason.getDiapason().containsKey(DIAPASON_HOUSES.LAST)
+                                && diapason.getDiapason().get(DIAPASON_HOUSES.LAST).compareTo(currentHouse)<0)) continue;
 
-                        if(diapason.getDiapason().containsKey(DIAPASON_HOUSES.FIRST)){
-                            House houseFirst=diapason.getDiapason().get(DIAPASON_HOUSES.FIRST);
-                            if (houseFirst.compareTo(currentHouse)>0)
-                                continue;
-                        }
-                        if(diapason.getDiapason().containsKey(DIAPASON_HOUSES.LAST)){
-                            House houseLast=diapason.getDiapason().get(DIAPASON_HOUSES.LAST);
-                            if (houseLast.compareTo(currentHouse)<0)
-                                continue;
-                        }
-                        if(diapason.getSTREETSIDE()==STREET_SIDE.RIGHT){
-                            if(numberHouse%2==0){
-                                streetsForView.add(st);
-                                break;
-                            }
-                        } else if(diapason.getSTREETSIDE()==STREET_SIDE.LEFT){
-                            if(numberHouse%2!=0){
-                                streetsForView.add(st);
-                                break;
-                            }
-                        }else {
+                        if(getCurrentStreetSide(diapason,numberHouse)){
                             streetsForView.add(st);
                             break;
                         }
@@ -107,10 +83,12 @@ public class RequestHandler {
 
             }
 
+            streetsForView.forEach(str-> str.getJudicialSector()
+                    .setWorkSheduleInfo(str.getJudicialSector()
+                            .getWorkSheduleJudicialSector().getWork_schedule()));
+
+
             if(!streetsForView.isEmpty()){
-                for (Street st:streetsForView){
-                    st.getJudicialSector().setWorkSheduleInfo(st.getJudicialSector().getWorkSheduleJudicialSector().getWork_schedule());
-                }
                 model.addAttribute("streetssearch",streetsForView);
                 if(StringUtils.hasText(number) && Integer.parseInt(number)>0){
                     if(StringUtils.hasText(number) && StringUtils.hasText(housing))
@@ -119,11 +97,10 @@ public class RequestHandler {
                         model.addAttribute("house","д. " + number);
                 }
             }else {
-                model.addAttribute("messageEmpty","Для вавшего запроса не был найден судебный участок");
+                model.addAttribute("messageEmptyCity",true);
             }
 
         }else{
-
             model.addAllAttributes(ControllerUtils.getErrors(bindingResult));
             model.addAttribute("street",street);
         }
@@ -137,10 +114,24 @@ public class RequestHandler {
             model.addAllAttributes(ControllerUtils.getErrors(bindingResult));
 
         }else {
-            List<Settlement>settlements=settlementRepo.findByName(settlement.getName());
+//            List<Settlement>settlements=settlementRepo.findByName(settlement.getName());
+            List<Settlement>settlements=settlementRepo.findAll().stream().filter(x->x.getName().equalsIgnoreCase(settlement.getName())).collect(Collectors.toList());
+            if(settlements.isEmpty())
+                model.addAttribute("messageEmptyDistrict",true);//для вашего запроса не было найдена поселка/села
+            else
             model.addAttribute("settlementsearch",settlements);
         }
 
         return "main";
+    }
+
+    private boolean getCurrentStreetSide(DiapasonHouses diapason,int numberHouse){
+        if(diapason.getSTREETSIDE()==STREET_SIDE.RIGHT)
+            return numberHouse%2==0;
+
+        else if(diapason.getSTREETSIDE()==STREET_SIDE.LEFT)
+             return numberHouse%2!=0;
+
+        return true;
     }
 }

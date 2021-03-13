@@ -4,9 +4,11 @@ import com.sudiinfo.domain.FunctionReportSector;
 import com.sudiinfo.domain.databaseclasses.city.DiapasonHouses;
 import com.sudiinfo.domain.databaseclasses.city.JudicialSector;
 import com.sudiinfo.domain.databaseclasses.city.Street;
+import com.sudiinfo.repo.DiapasonHousesRepo;
 import com.sudiinfo.repo.StreetRepo;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,18 +22,27 @@ import java.util.stream.Collectors;
 public class ReportHandlerSector {
 
     private StreetRepo streetRepo;
+    private DiapasonHousesRepo diapasonHousesRepo;
 
-    public ReportHandlerSector(StreetRepo streetRepo) {
+    private List<DiapasonHouses>diapasonHouses;
+
+    @PostConstruct
+    private void getStreetsAll(){
+        diapasonHouses=diapasonHousesRepo.findAll();
+
+    }
+
+    public ReportHandlerSector(StreetRepo streetRepo, DiapasonHousesRepo diapasonHousesRepo) {
         this.streetRepo = streetRepo;
+        this.diapasonHousesRepo = diapasonHousesRepo;
     }
 
     public Map<DiapasonHouses, List<DiapasonHouses>> handleReportSector(JudicialSector judicialsector) {
 
         List<DiapasonHouses> diapasonHousesAll = new ArrayList<>();
-        streetRepo.findAll().stream()
-                .filter(x -> !x.getJudicialSector().getWebAddress().equals(judicialsector.getWebAddress()))
-                .map(Street::getDiapasonHouses)
-                .forEach(x -> diapasonHousesAll.addAll(x));
+        diapasonHouses.stream()
+                .filter(x -> !x.getStreet().getJudicialSector().getWebAddress().equals(judicialsector.getWebAddress()))
+                .forEach(x -> diapasonHousesAll.add(x));
 
         List<DiapasonHouses> diapasonHousesJudicialSector = new ArrayList<>();
         judicialsector.getStreets().forEach(x -> diapasonHousesJudicialSector.addAll(x.getDiapasonHouses()));
@@ -42,7 +53,6 @@ public class ReportHandlerSector {
 
 
         return mapResultRange;
-
 
     }
 }

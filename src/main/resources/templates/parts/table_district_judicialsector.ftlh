@@ -104,4 +104,12 @@
     </div>
 </table>
 </div>
+<#elseIf messageEmptyDistrict??>
+    <div class="row justify-content-center pb-5">
+        <div>
+            <strong>
+                Для вашего поселка/села не было найдено судебного участка.
+            </strong>
+        </div>
+    </div>
 </#if>

@@ -105,7 +105,7 @@
         </div>
     </table>
     </div>
-<#elseIf messageEmpty??>
+<#elseIf messageEmptyCity??>
     <div class="row justify-content-center pb-5">
         <div>
             <strong>

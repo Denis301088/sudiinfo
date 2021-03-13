@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 
 import javax.validation.Valid;
 import java.util.Collections;
+import java.util.List;
 
 /*
 * Сервисный класс для добавления администратора в БД
@@ -49,7 +50,8 @@ public class UserService implements UserDetailsService {
             }else {
                 user.setRoles(Collections.singleton(Role.ADMIN));
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
-                userRepo.save(user);
+
+                ((List<User>)model.getAttribute("users")).add(userRepo.save(user));
             }
         }
 
