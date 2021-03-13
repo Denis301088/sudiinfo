@@ -53,7 +53,8 @@ public class ReportController {
 
         if(judicialsector==null){
             if(StringUtils.hasText(street.getName())){
-                List<Street> streets=streetRepo.findByName(street.getName());
+//                List<Street> streets=streetRepo.findByName(street.getName());
+                List<Street> streets=streetRepo.findAll().stream().filter(x->x.getName().equalsIgnoreCase(street.getName())).collect(Collectors.toList());
                 if(streets.isEmpty())model.addAttribute("streetEmpty",true);
                 else {
                     model.addAttribute("streets",streets);
